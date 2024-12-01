@@ -10,9 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Run Build
-        run: |
-          echo "Running build"
+      - uses: actions/checkout@v4
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Create artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: sveltekit-build
+          path: |
+            build/
+            !build/**/*.map    # excludes source maps
+          retention-days: 7 # how long to keep the artifact
+
   deploy-dev:
     runs-on: ubuntu-latest
     needs: build
@@ -20,8 +43,9 @@ jobs:
 
     steps:
       - name: Deploy to Dev
-        run: |
-          echo "Deploying to Dev"
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          folder: build
 
   tag_commit:
     runs-on: ubuntu-latest
