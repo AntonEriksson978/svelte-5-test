@@ -49,6 +49,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: sveltekit-build
+          path: build
 
       - name: Display structure of downloaded files
         run: ls -R
@@ -56,7 +57,7 @@ jobs:
       - name: Deploy to Dev
         uses: JamesIves/github-pages-deploy-action@v4
         with:
-          folder: sveltekit-build
+          folder: build
 
   tag_commit:
     runs-on: ubuntu-latest
