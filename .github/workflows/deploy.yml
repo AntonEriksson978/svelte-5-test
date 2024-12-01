@@ -1,0 +1,14 @@
+name: Deploy
+
+on:
+  push:
+    branches: ['main']
+
+jobs:
+  supabase-schema-diff:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Rub Build
+        run: |
+          echo "Running build"
